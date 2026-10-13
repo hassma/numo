@@ -30,22 +30,31 @@ It has **not** been type-checked, built, or run, and none of the tests have been
 
 ## Build it
 
-You need a Mac with macOS 26 and Xcode 26.
+You need a Mac with macOS 26, Xcode 26 and `brew install xcodegen`. Run every command from the **repository root**; the `Makefile` does the right thing regardless:
 
 ```sh
-brew install xcodegen
-cd Numo
-xcodegen generate            # writes Numo.xcodeproj (git-ignored)
-open Numo.xcodeproj          # set your team under Signing & Capabilities, then Run
+make doctor     # check the toolchain
+make test       # NumoCore logic tests
+make build      # compile the app without signing
+make open       # generate Numo.xcodeproj and open it; pick your team, then Run
 ```
 
-Run the logic tests without Xcode UI:
+Without `make`:
 
 ```sh
-swift test --package-path Numo/Packages/NumoCore
+(cd Numo && xcodegen generate)
+open Numo/Numo.xcodeproj
+xcrun swift test --package-path Numo/Packages/NumoCore
 ```
 
 Run once from Xcode, then quit and relaunch from Finder: `LSUIElement` only takes effect on a clean launch, so launching from the debugger can still show a Dock icon.
+
+::: tip Common errors
+- `swift: bad interpreter: …python3.11…`: the `swift` on your `PATH` is a stale Homebrew script. Use `xcrun swift` (the `make` targets already do).
+- `chdir error … Numo/Numo/Packages/NumoCore`: you ran a root-relative command from inside `Numo/`. Go back to the root.
+
+The README has a full troubleshooting table.
+:::
 
 ## Deviations from the plan
 
