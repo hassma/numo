@@ -63,4 +63,4 @@ Deliberately **not** in the MVP: onboarding polish, dimming, sound, Gentle/Unmis
 
 ## What happens next
 
-No Xcode project is generated until you answer the questions in [Decisions awaiting approval](/decisions). The recommended defaults are pre-selected, so a reply of "approved with defaults" is enough.
+The Phase 1 MVP is written (see [MVP implementation status](/implementation)) but has not been compiled yet. The next step is to build it on a Mac with Xcode 26, fix whatever the compiler finds, and run the Phase 0 spikes. The defaults in [Decisions](/decisions) were used.

@@ -14,6 +14,7 @@ export default defineConfig({
       { text: 'Overview', link: '/overview' },
       { text: 'Plan', link: '/product-spec' },
       { text: 'Roadmap', link: '/roadmap' },
+      { text: 'MVP status', link: '/implementation' },
       { text: 'Decisions', link: '/decisions' }
     ],
 
@@ -22,7 +23,8 @@ export default defineConfig({
         text: 'Start here',
         items: [
           { text: 'Overview & MVP', link: '/overview' },
-          { text: 'Decisions awaiting approval', link: '/decisions' }
+          { text: 'MVP implementation status', link: '/implementation' },
+          { text: 'Decisions', link: '/decisions' }
         ]
       },
       {
@@ -43,7 +45,7 @@ export default defineConfig({
     outline: { level: [2, 3] },
     search: { provider: 'local' },
     footer: {
-      message: 'Planning documents. No application code has been written yet.',
+      message: 'Plan and MVP status. The MVP code is written but not yet compiled.',
       copyright: 'numo'
     }
   }
