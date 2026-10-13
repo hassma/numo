@@ -8,9 +8,11 @@
 SWIFT   ?= xcrun swift
 CORE    := Numo/Packages/NumoCore
 PROJECT := Numo/Numo.xcodeproj
+DERIVED := build
+APP     := $(DERIVED)/Build/Products/Debug/numo.app
 
 .DEFAULT_GOAL := help
-.PHONY: help doctor check-xcode project open build test docs-install docs-dev docs-build clean
+.PHONY: help doctor check-xcode project open build run stop test docs-install docs-dev docs-build clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-13s %s\n", $$1, $$2}'
@@ -42,6 +44,14 @@ open: project ## Generate the project and open it in Xcode
 build: check-xcode project ## Compile the app without signing (checks that it builds)
 	xcodebuild -project $(PROJECT) -scheme Numo -configuration Debug -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO build
 
+run: check-xcode project ## Build (ad-hoc signed, no team needed) and launch numo
+	xcodebuild -project $(PROJECT) -scheme Numo -configuration Debug -destination 'platform=macOS' -derivedDataPath $(DERIVED) CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= build
+	open $(APP)
+	@echo "numo is running in the menu bar (top right). 'make stop' quits it."
+
+stop: ## Quit the running numo
+	-pkill -x numo
+
 test: check-xcode ## Run the NumoCore logic tests
 	$(SWIFT) test --package-path $(CORE)
 
@@ -55,4 +65,4 @@ docs-build: ## Build the static docs site
 	pnpm docs:build
 
 clean: ## Remove generated files
-	rm -rf $(PROJECT) $(CORE)/.build docs/.vitepress/dist docs/.vitepress/cache
+	rm -rf $(PROJECT) $(DERIVED) $(CORE)/.build docs/.vitepress/dist docs/.vitepress/cache

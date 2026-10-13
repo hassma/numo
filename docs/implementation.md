@@ -35,8 +35,9 @@ You need a Mac with macOS 26, Xcode 26 and `brew install xcodegen`. Run every co
 ```sh
 make doctor     # check the toolchain
 make test       # NumoCore logic tests
-make build      # compile the app without signing
-make open       # generate Numo.xcodeproj and open it; pick your team, then Run
+make build      # compile the app without signing (a compile check, not meant to be run)
+make run        # build ad-hoc signed and launch it (make stop quits it)
+make open       # generate Numo.xcodeproj and open it; pick your team, then ⌘R
 ```
 
 Without `make`:

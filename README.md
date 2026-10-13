@@ -32,10 +32,16 @@ Run everything from the repository root. `make` lists the available commands:
 make doctor     # check that the tools are installed
 make test       # run the logic tests (NumoCore)
 make build      # compile the app without code signing
-make open       # generate the Xcode project and open it
+make run        # build, ad-hoc sign and launch numo from the terminal
+make open       # generate the Xcode project and open it in Xcode
 ```
 
-To run the app, use `make open`, then in Xcode select the **Numo** target → **Signing & Capabilities** → choose your **Team**, and press Run. macOS will ask for calendar access the first time.
+To start the app, use either:
+
+- `make run`: builds with ad-hoc signing (no Apple developer team needed) and launches `build/Build/Products/Debug/numo.app`. `make stop` quits it.
+- `make open`, then in Xcode select the **Numo** target → **Signing & Capabilities** → choose your **Team**, and press ⌘R. Best for debugging.
+
+**What you should see:** no window and no Dock icon. numo lives in the **menu bar** at the top right (a calendar icon, or a countdown such as "in 12m"). macOS asks for calendar access the first time; choose **Allow Full Access**. Click the icon to open the popover, then choose **Send test reminder** to see the reminder card straight away.
 
 Then use **Send test reminder** in the menu-bar popover to see the card without waiting for a meeting.
 
