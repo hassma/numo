@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: Meeting Nudge
+  name: numo
   text: A reminder you can't accidentally miss.
   tagline: A native macOS 26 menu-bar app with a Liquid Glass overlay that interrupts deep focus, and always lets you join, snooze or dismiss.
   actions:

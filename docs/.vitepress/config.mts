@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // Set base to '/<repo>/' when publishing to GitHub Pages (e.g. '/numo/').
 export default defineConfig({
-  title: 'Meeting Nudge',
+  title: 'numo',
   description:
     'Product & technical plan for a native macOS meeting reminder built with SwiftUI and Liquid Glass.',
   lang: 'en-US',
@@ -44,7 +44,7 @@ export default defineConfig({
     search: { provider: 'local' },
     footer: {
       message: 'Planning documents. No application code has been written yet.',
-      copyright: 'Meeting Nudge'
+      copyright: 'numo'
     }
   }
 })

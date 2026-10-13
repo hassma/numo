@@ -2,7 +2,7 @@
 
 ## Positioning
 
-Meeting Nudge is **not a notification app**. A notification is easy to miss while you are in flow; Meeting Nudge puts a large, glass, unmistakable card in the middle of your screen at the moment that matters, then gets out of the way the instant you act.
+numo is **not a notification app**. A notification is easy to miss while you are in flow; numo puts a large, glass, unmistakable card in the middle of your screen at the moment that matters, then gets out of the way the instant you act.
 
 Principles:
 

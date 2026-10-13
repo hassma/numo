@@ -24,7 +24,7 @@ Effort is relative (S ≈ days, M ≈ 1–2 weeks, L ≈ 2–3 weeks of one deve
 
 Scope:
 
-- Xcode project, `NudgeCore` package, strict concurrency, accessory app.
+- Xcode project, `NumoCore` package, strict concurrency, accessory app.
 - EventKit provider, authorisation flow (bare-bones), calendar enable/disable.
 - Link detector with fixtures; filter; planner; ledger; engine with sleep/wake/clock recovery.
 - Focused overlay (panel, glass card, ring, Join/Snooze/Dismiss), single meeting.
@@ -39,7 +39,7 @@ Scope:
 3. Join opens the right Meet/Teams link and removes the overlay; Snooze re-shows after the chosen interval; Dismiss never re-shows that meeting.
 4. Cancelled and declined meetings never alert; a moved meeting alerts at its new time only.
 5. Idle CPU is 0.0 % in Activity Monitor over 10 minutes; resident memory under 40 MB.
-6. All `NudgeCore` unit tests pass, including DST and manual-clock scenarios.
+6. All `NumoCore` unit tests pass, including DST and manual-clock scenarios.
 7. No network entitlement; app launches with Calendar permission denied and shows the recovery state.
 
 ## Phase 2 · The full experience

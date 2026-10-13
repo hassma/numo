@@ -16,7 +16,7 @@ Each row has a recommended default. Reply "approved with defaults" or list the c
 | 10 | **Background dim default** | Off in Focused, on in Unmissable (both user-editable) | Always off is gentler; always on is stronger. |
 | 11 | **Focus / DND** | Overlay ignores Focus by default (that is its purpose). Opt-in "Downgrade to Gentle while a Focus is active" where `INFocusStatusCenter` allows. | Honouring Focus by default would defeat the app. |
 | 12 | **Notification fallback** | Phase 3: schedule a time-sensitive `UserNotifications` backup for the next meetings, cancelled when the overlay shows | Skipping it means a crashed app misses meetings silently. |
-| 13 | **Bundle ID / signing team** | Placeholder `app.meetingnudge.MeetingNudge`; you provide the real team ID | Needed only when generating the Xcode project. |
+| 13 | **Bundle ID / signing team** | Placeholder `app.numo.Numo`; you provide the real team ID | Needed only when generating the Xcode project. |
 
 ## Information I need from you before Phase 0
 
