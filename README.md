@@ -67,6 +67,7 @@ The parentheses keep the `cd` from changing your shell's directory, so the later
 | --- | --- |
 | `swift: bad interpreter: /opt/homebrew/opt/python@3.11/bin/python3.11: no such file` | The `swift` first on your `PATH` is a stale Homebrew script, not Xcode's compiler. Use `make test` (it calls `xcrun swift`), or run `xcrun swift …` directly. To fix it for good, run `which -a swift` and `ls -l /opt/homebrew/bin/swift`, then `brew reinstall` or `brew uninstall` the formula it points to. `make doctor` shows what is on your `PATH`. |
 | `chdir error … Numo/Numo/Packages/NumoCore` | A command that expects the repository root was run from inside `Numo/`. Run `cd ..` back to the root, or use `make`. |
+| `xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' …` | Only the Command Line Tools are active. Install Xcode 26, then `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`, `sudo xcodebuild -license accept` and `sudo xcodebuild -runFirstLaunch`. `make build` and `make test` now detect this and say so. |
 | `xcodegen: command not found` | `brew install xcodegen` |
 | Xcode: "Signing requires a development team" | Pick your team under Signing & Capabilities, or use `make build`, which skips signing. |
 | No calendar prompt appears / access was denied | System Settings → Privacy & Security → Calendars → Full Calendar Access → numo. To get the prompt again: `tccutil reset Calendar app.numo.Numo`. |

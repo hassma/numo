@@ -10,18 +10,28 @@ CORE    := Numo/Packages/NumoCore
 PROJECT := Numo/Numo.xcodeproj
 
 .DEFAULT_GOAL := help
-.PHONY: help doctor project open build test docs-install docs-dev docs-build clean
+.PHONY: help doctor check-xcode project open build test docs-install docs-dev docs-build clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-13s %s\n", $$1, $$2}'
 
 doctor: ## Check that the tools numo needs are installed
-	@echo "xcode-select : $$(xcode-select -p 2>&1)"
+	@echo "xcode-select : $$(xcode-select -p 2>&1)  <- must be inside Xcode.app, not CommandLineTools"
 	@echo "swift (Xcode): $$($(SWIFT) --version 2>&1 | head -1)"
 	@echo "swift (PATH) : $$(command -v swift || echo none)  <- if this is not /usr/bin/swift, prefer 'make' targets"
 	@echo "xcodebuild   : $$(xcodebuild -version 2>&1 | head -1)"
 	@echo "xcodegen     : $$(command -v xcodegen || echo 'missing (brew install xcodegen)')"
 	@echo "pnpm         : $$(command -v pnpm || echo 'missing (only needed for the docs)')"
+
+check-xcode:
+	@if xcode-select -p 2>/dev/null | grep -q CommandLineTools; then \
+		echo "error: the active developer directory is the Command Line Tools, not Xcode."; \
+		echo "  Install Xcode 26, then run:"; \
+		echo "    sudo xcode-select -s /Applications/Xcode.app/Contents/Developer"; \
+		echo "    sudo xcodebuild -license accept && sudo xcodebuild -runFirstLaunch"; \
+		echo "  (adjust the path if your Xcode app has another name; 'make doctor' shows the current state)"; \
+		exit 1; \
+	fi
 
 project: ## Generate Numo/Numo.xcodeproj from Numo/project.yml
 	cd Numo && xcodegen generate
@@ -29,10 +39,10 @@ project: ## Generate Numo/Numo.xcodeproj from Numo/project.yml
 open: project ## Generate the project and open it in Xcode
 	open $(PROJECT)
 
-build: project ## Compile the app without signing (checks that it builds)
+build: check-xcode project ## Compile the app without signing (checks that it builds)
 	xcodebuild -project $(PROJECT) -scheme Numo -configuration Debug -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO build
 
-test: ## Run the NumoCore logic tests
+test: check-xcode ## Run the NumoCore logic tests
 	$(SWIFT) test --package-path $(CORE)
 
 docs-install: ## Install the docs dependencies
