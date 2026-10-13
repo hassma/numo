@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: Meeting Nudge
+  name: numo
   text: A reminder you can't accidentally miss.
   tagline: A native macOS 26 menu-bar app with a Liquid Glass overlay that interrupts deep focus, and always lets you join, snooze or dismiss.
   actions:
@@ -45,7 +45,8 @@ features:
 | [F · Roadmap](/roadmap) | Phases, milestones, acceptance criteria |
 | [G · Risks & edge cases](/risks) | Failure modes and mitigations |
 | [H · Testing](/testing) | Unit, integration and manual QA matrices |
+| [MVP status](/implementation) | What is built, how to build it, what to verify first |
 
 ::: warning Status
-This is a plan. It was written in a Linux sandbox, so **nothing has been compiled or run on macOS**. API names come from Apple's documented frameworks and public sources; items that need confirmation on real hardware are marked 🔬 and scheduled as [Phase 0 spikes](/roadmap#phase-0-feasibility-spikes).
+The plan is approved to build and the Phase 1 MVP is written (see [MVP status](/implementation)). It was written in a Linux sandbox, so **nothing has been compiled or run on macOS yet**. API names come from Apple's documented frameworks and public sources; items that need confirmation on real hardware are marked 🔬 and scheduled as [Phase 0 spikes](/roadmap#phase-0-feasibility-spikes).
 :::

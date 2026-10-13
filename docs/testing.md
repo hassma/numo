@@ -1,12 +1,12 @@
 # H · Testing strategy
 
-Principle: put as much logic as possible in `NudgeCore` where it can be tested deterministically, then verify the thin system layers with scripted manual runs.
+Principle: put as much logic as possible in `NumoCore` where it can be tested deterministically, then verify the thin system layers with scripted manual runs.
 
 ## Test pyramid
 
 | Layer | Tooling | What it covers |
 | --- | --- | --- |
-| Unit (`NudgeCore`) | Swift Testing (`@Test`), manual `Clock`, fixture files | Link detection, filtering, planning, dedupe, ledger state machine, catch-up policy, DST |
+| Unit (`NumoCore`) | Swift Testing (`@Test`), manual `Clock`, fixture files | Link detection, filtering, planning, dedupe, ledger state machine, catch-up policy, DST |
 | Adapter | XCTest/Swift Testing in the app test target | EventKit snapshot mapping, URL opening via fake `URLOpening`, settings migration |
 | Integration | Debug-only seeding tool + real EventKit | End-to-end calendar → overlay on a dev Mac |
 | UI smoke | XCUITest | Onboarding, menu-bar popover, settings navigation |
@@ -56,7 +56,7 @@ Run planner tests in several `TimeZone`s and around transitions:
 
 ## Testing calendar syncing
 
-1. **Seed tool** (debug menu): creates an "On My Mac" calendar named *Nudge Test* and events at now+1, +2, +3 min, two at the same minute, one recurring daily, one all-day, one with a Teams link, one with a Meet link, one with both, one without a link.
+1. **Seed tool** (debug menu): creates an "On My Mac" calendar named *numo Test* and events at now+1, +2, +3 min, two at the same minute, one recurring daily, one all-day, one with a Teams link, one with a Meet link, one with both, one without a link.
 2. **Edit tests** (in Calendar.app): move an event, change its link, delete it, delete one occurrence of a series, and verify popover and pending reminders update within a few seconds of `EKEventStoreChanged`.
 3. **Account tests** with real Google, Microsoft 365 and iCloud accounts: create an invite from another account, accept, decline, cancel; record end-to-end latency in a table.
 4. **Permission tests:** deny at first prompt, revoke in System Settings while running, re-grant; check recovery UI each time.
@@ -127,6 +127,6 @@ Also verify that while Unmissable is visible you can still: click menu-bar items
 
 ## Continuous integration
 
-- Linux or macOS runner: `swift test` for `NudgeCore`.
+- Linux or macOS runner: `swift test` for `NumoCore`.
 - macOS 26 runner (check image availability): `xcodebuild test` for app and UI smoke tests.
 - Manual QA matrices run before each tagged release and recorded in the release notes.

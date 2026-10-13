@@ -20,14 +20,14 @@ Pure logic is separated from system frameworks so it can be tested without a cal
 │  URLOpener (NSWorkspace)            LoginItemService (SMAppService)   │
 │  DisplayMonitor   SoundPlayer   FocusMonitor?   NotificationFallback? │
 ├──────────┼──────────────┼─────────────────────────────────────────────┤
-│ NudgeCore (local Swift package, Foundation only, fully unit-tested)   │
+│ NumoCore (local Swift package, Foundation only, fully unit-tested)   │
 │                                                                       │
 │  Meeting  MeetingLinkDetector  MeetingFilter  ReminderPlanner         │
-│  ReminderEngine (actor)  ReminderLedger  AppSettings  NudgeClock      │
+│  ReminderEngine (actor)  ReminderLedger  AppSettings  NumoClock      │
 └───────────────────────────────────────────────────────────────────────┘
 ```
 
-Dependencies point downwards only. `NudgeCore` defines protocols (`CalendarProviding`, `URLOpening`, `ReminderLedgerStore`, `Clock`); adapters implement them.
+Dependencies point downwards only. `NumoCore` defines protocols (`CalendarProviding`, `URLOpening`, `ReminderLedgerStore`, `Clock`); adapters implement them.
 
 ## Components
 
@@ -130,7 +130,7 @@ When a replan finds reminders whose `fireAt` is in the past:
 | Data | Store | Notes |
 | --- | --- | --- |
 | Settings | `UserDefaults`, one versioned JSON blob | Migration function per version bump |
-| Reminder ledger | `~/Library/Application Support/MeetingNudge/ledger.json` (sandbox container) | Atomic writes, pruned after 7 days, tolerant of corruption (reset, never crash) |
+| Reminder ledger | `~/Library/Application Support/Numo/ledger.json` (sandbox container) | Atomic writes, pruned after 7 days, tolerant of corruption (reset, never crash) |
 | Secrets | none in MVP; Keychain in optional Phase 4 | |
 
 SwiftData/Core Data were rejected: the data is tiny, short-lived and not relational.

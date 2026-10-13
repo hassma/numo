@@ -5,7 +5,11 @@
 > When a meeting starts, I should not be able to accidentally overlook it.
 > The experience must be impossible to ignore accidentally, but always possible to intentionally dismiss or snooze.
 
-Meeting Nudge is a small, native, menu-bar-resident macOS app (Swift 6, SwiftUI, AppKit only for window management, macOS 26+, Liquid Glass). It reads calendars, finds meeting links, and shows an escalating glass overlay.
+numo is a small, native, menu-bar-resident macOS app (Swift 6, SwiftUI, AppKit only for window management, macOS 26+, Liquid Glass). It reads calendars, finds meeting links, and shows an escalating glass overlay.
+
+## About the name
+
+**numo** comes from the Ukrainian word «нумо» ("come on", "let's go"): the nudge you need to actually get into the meeting. Code identifiers use `Numo` (for example `NumoCore`, `NumoApp`), and the placeholder bundle ID is `app.numo.Numo`.
 
 ## How to read the confidence markers
 
@@ -59,4 +63,4 @@ Deliberately **not** in the MVP: onboarding polish, dimming, sound, Gentle/Unmis
 
 ## What happens next
 
-No Xcode project is generated until you answer the questions in [Decisions awaiting approval](/decisions). The recommended defaults are pre-selected, so a reply of "approved with defaults" is enough.
+The Phase 1 MVP is written (see [MVP implementation status](/implementation)) but has not been compiled yet. The next step is to build it on a Mac with Xcode 26, fix whatever the compiler finds, and run the Phase 0 spikes. The defaults in [Decisions](/decisions) were used.

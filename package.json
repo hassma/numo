@@ -1,8 +1,8 @@
 {
-  "name": "meeting-nudge-docs",
+  "name": "numo-docs",
   "private": true,
   "version": "0.1.0",
-  "description": "Product & technical plan for Meeting Nudge, a native macOS meeting reminder.",
+  "description": "Product & technical plan for numo, a native macOS meeting reminder.",
   "type": "module",
   "scripts": {
     "docs:dev": "vitepress dev docs",
@@ -11,5 +11,14 @@
   },
   "devDependencies": {
     "vitepress": "^1.6.4"
+  },
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

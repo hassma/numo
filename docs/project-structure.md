@@ -3,20 +3,20 @@
 One Xcode app target plus one local Swift package for the pure logic. No third-party dependencies.
 
 ```
-MeetingNudge/
-├── MeetingNudge.xcodeproj
+Numo/
+├── Numo.xcodeproj
 │
 ├── App/
-│   ├── MeetingNudgeApp.swift          # @main: MenuBarExtra, Settings scene, onboarding window
+│   ├── NumoApp.swift          # @main: MenuBarExtra, Settings scene, onboarding window
 │   ├── AppDelegate.swift              # activation policy, termination, dock-icon toggle
 │   ├── AppEnvironment.swift           # composition root: builds and wires all services
 │   ├── Info.plist                     # LSUIElement=YES, NSCalendarsFullAccessUsageDescription
-│   ├── MeetingNudge.entitlements      # app-sandbox, personal-information.calendars
+│   ├── Numo.entitlements      # app-sandbox, personal-information.calendars
 │   └── Assets.xcassets
 │
-├── Packages/NudgeCore/                # Foundation only. Builds and tests anywhere Swift runs
+├── Packages/NumoCore/                # Foundation only. Builds and tests anywhere Swift runs
 │   ├── Package.swift
-│   ├── Sources/NudgeCore/
+│   ├── Sources/NumoCore/
 │   │   ├── Models/
 │   │   │   ├── Meeting.swift          # Sendable snapshot of a calendar occurrence
 │   │   │   ├── MeetingID.swift
@@ -41,7 +41,7 @@ MeetingNudge/
 │   │       ├── CalendarProviding.swift
 │   │       ├── URLOpening.swift
 │   │       └── LedgerStore.swift
-│   └── Tests/NudgeCoreTests/
+│   └── Tests/NumoCoreTests/
 │       ├── MeetingLinkDetectorTests.swift  # fixture-driven (Fixtures/*.txt)
 │       ├── ReminderPlannerTests.swift
 │       ├── ReminderEngineTests.swift       # manual Clock, wake/clock-change scenarios
@@ -117,8 +117,8 @@ MeetingNudge/
 │   ├── Sounds/                        # short CAF files
 │   └── Localizable.xcstrings
 │
-├── MeetingNudgeTests/                 # adapter and coordinator tests
-├── MeetingNudgeUITests/               # onboarding, menu bar, settings smoke tests
+├── NumoTests/                 # adapter and coordinator tests
+├── NumoUITests/               # onboarding, menu bar, settings smoke tests
 └── Tools/
     └── SeedTestCalendar.swift         # debug-only: creates a calendar and timed events
 ```
@@ -129,4 +129,4 @@ MeetingNudge/
 - **Composition root:** `AppEnvironment` is the only place that knows concrete types. Everything else takes protocols, which keeps previews and tests trivial.
 - **Debug menu:** a `#if DEBUG` menu in the status item offers "Send test reminder", "Seed test events", "Simulate wake" and "Show panel on every screen".
 - **Deployment target:** macOS 26.0. Swift language mode 6 with strict concurrency.
-- **Bundle ID:** placeholder `app.meetingnudge.MeetingNudge` until you supply a real one.
+- **Bundle ID:** placeholder `app.numo.Numo` until you supply a real one.
