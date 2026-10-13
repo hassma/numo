@@ -38,7 +38,7 @@ make open       # generate the Xcode project and open it in Xcode
 
 To start the app, use either:
 
-- `make run`: builds with ad-hoc signing (no Apple developer team needed) and launches `build/Build/Products/Debug/numo.app`. `make stop` quits it.
+- `make run`: builds with ad-hoc signing (no Apple developer team needed) and launches `build/Build/Products/Debug/numo.app`. `make stop` quits it. `make run SIGNING=none` skips signing altogether; the app then runs unsandboxed, which is fine for trying it out.
 - `make open`, then in Xcode select the **Numo** target → **Signing & Capabilities** → choose your **Team**, and press ⌘R. Best for debugging.
 
 **What you should see:** no window and no Dock icon. numo lives in the **menu bar** at the top right (a calendar icon, or a countdown such as "in 12m"). macOS asks for calendar access the first time; choose **Allow Full Access**. Click the icon to open the popover, then choose **Send test reminder** to see the reminder card straight away.

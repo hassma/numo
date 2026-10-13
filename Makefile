@@ -11,6 +11,14 @@ PROJECT := Numo/Numo.xcodeproj
 DERIVED := build
 APP     := $(DERIVED)/Build/Products/Debug/numo.app
 
+# make run                 ad-hoc signed: sandbox + calendar entitlements applied, no Apple account needed
+# make run SIGNING=none    skip signing: runs unsandboxed (fine for a quick try, not the shipped setup)
+ifeq ($(SIGNING),none)
+SIGN_FLAGS := CODE_SIGNING_ALLOWED=NO
+else
+SIGN_FLAGS := CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=
+endif
+
 .DEFAULT_GOAL := help
 .PHONY: help doctor check-xcode project open build run stop test docs-install docs-dev docs-build clean
 
@@ -44,8 +52,8 @@ open: project ## Generate the project and open it in Xcode
 build: check-xcode project ## Compile the app without signing (checks that it builds)
 	xcodebuild -project $(PROJECT) -scheme Numo -configuration Debug -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO build
 
-run: check-xcode project ## Build (ad-hoc signed, no team needed) and launch numo
-	xcodebuild -project $(PROJECT) -scheme Numo -configuration Debug -destination 'platform=macOS' -derivedDataPath $(DERIVED) CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= build
+run: check-xcode project ## Build and launch numo (ad-hoc signed; SIGNING=none skips signing)
+	xcodebuild -project $(PROJECT) -scheme Numo -configuration Debug -destination 'platform=macOS' -derivedDataPath $(DERIVED) $(SIGN_FLAGS) build
 	open $(APP)
 	@echo "numo is running in the menu bar (top right). 'make stop' quits it."
 
