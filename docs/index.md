@@ -48,5 +48,5 @@ features:
 | [MVP status](/implementation) | What is built, how to build it, what to verify first |
 
 ::: warning Status
-The plan is approved to build and the Phase 1 MVP is written (see [MVP status](/implementation)). It was written in a Linux sandbox, so **nothing has been compiled or run on macOS yet**. API names come from Apple's documented frameworks and public sources; items that need confirmation on real hardware are marked 🔬 and scheduled as [Phase 0 spikes](/roadmap#phase-0-feasibility-spikes).
+The plan is approved to build and the Phase 1 MVP is written (see [MVP status](/implementation)). It was written in a Linux sandbox and **builds on macOS 26 / Xcode 26**, but its runtime behaviour and tests are still being verified on hardware. API names come from Apple's documented frameworks and public sources; items that need confirmation on real hardware are marked 🔬 and scheduled as [Phase 0 spikes](/roadmap#phase-0-feasibility-spikes).
 :::

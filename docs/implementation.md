@@ -2,13 +2,8 @@
 
 The Phase 1 MVP from the [roadmap](/roadmap#phase-1-mvp-it-reliably-reminds-me) is written. It lives in `Numo/`.
 
-::: danger Not yet compiled
-The code was written in a Linux sandbox with **no Swift toolchain** (the environment's network policy blocks `download.swift.org`). So far it has only been:
-
-- syntax-checked with a tree-sitter Swift grammar (all 31 files parse; `#expect` macros and raw strings, which that grammar does not know, were neutralised first), and
-- reviewed by hand for type and concurrency errors.
-
-It has **not** been type-checked, built, or run, and none of the tests have been executed. Expect a first round of compiler fixes. Treat "builds and `swift test` passes" as the first acceptance gate.
+::: warning Compiles; not yet fully verified
+The code was written in a Linux sandbox with no Swift toolchain, then built on a Mac: `make build` succeeds with Xcode 26. Still to confirm on hardware: that the `NumoCore` tests pass (`make test`), and the runtime behaviour in the checklist below (panel over full-screen apps, glass rendering, link opening, sleep/wake).
 :::
 
 ## What is built

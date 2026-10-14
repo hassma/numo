@@ -20,7 +20,7 @@ SIGN_FLAGS := CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help doctor check-xcode project open build run stop test docs-install docs-dev docs-build clean
+.PHONY: help doctor check-xcode project open build run stop install uninstall test docs-install docs-dev docs-build clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-13s %s\n", $$1, $$2}'
@@ -59,6 +59,17 @@ run: check-xcode project ## Build and launch numo (ad-hoc signed; SIGNING=none s
 
 stop: ## Quit the running numo
 	-pkill -x numo
+
+install: check-xcode project ## Build a Release app and copy it to /Applications (ad-hoc signed)
+	xcodebuild -project $(PROJECT) -scheme Numo -configuration Release -destination 'platform=macOS' -derivedDataPath $(DERIVED) $(SIGN_FLAGS) build
+	-pkill -x numo
+	rm -rf /Applications/numo.app
+	cp -R $(DERIVED)/Build/Products/Release/numo.app /Applications/numo.app
+	@echo "Installed /Applications/numo.app. Open it from Launchpad/Finder, or: open -a numo"
+
+uninstall: ## Quit numo and remove it from /Applications (settings are kept; see README)
+	-pkill -x numo
+	rm -rf /Applications/numo.app
 
 test: check-xcode ## Run the NumoCore logic tests
 	$(SWIFT) test --package-path $(CORE)
