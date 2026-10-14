@@ -20,6 +20,12 @@ public struct AppSettings: Codable, Equatable, Sendable {
     public var includeDeclinedEvents = false
     public var preferNativeTeamsApp = true
     public var pausedUntil: Date?
+    /// How the reminder presents itself. `unmissable` adds the blocking screen at the meeting start.
+    public var attentionMode: AttentionMode = .focused
+    /// Opacity of the dimmed screen in `unmissable` mode, 0.2 (light) to 0.9 (nearly black).
+    public var dimStrength = 0.55
+    /// In `unmissable` mode, whether clicks on the dimmed screen are swallowed (blocking) or pass through.
+    public var blockClicksWhenUnmissable = true
 
     public init() {}
 
@@ -36,6 +42,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         case version, disabledCalendarIDs, leadTimesMinutes, snoozeOptionsMinutes
         case defaultSnoozeMinutes, catchUpWindowMinutes, requireMeetingLink
         case includeAllDayEvents, includeDeclinedEvents, preferNativeTeamsApp, pausedUntil
+        case attentionMode, dimStrength, blockClicksWhenUnmissable
     }
 
     public init(from decoder: Decoder) throws {
@@ -51,5 +58,11 @@ public struct AppSettings: Codable, Equatable, Sendable {
         if let v = try c.decodeIfPresent(Bool.self, forKey: .includeDeclinedEvents) { includeDeclinedEvents = v }
         if let v = try c.decodeIfPresent(Bool.self, forKey: .preferNativeTeamsApp) { preferNativeTeamsApp = v }
         pausedUntil = try c.decodeIfPresent(Date.self, forKey: .pausedUntil)
+        // An unknown mode written by a newer build falls back to the default instead of failing to load.
+        if let raw = try c.decodeIfPresent(String.self, forKey: .attentionMode), let mode = AttentionMode(rawValue: raw) {
+            attentionMode = mode
+        }
+        if let v = try c.decodeIfPresent(Double.self, forKey: .dimStrength) { dimStrength = v }
+        if let v = try c.decodeIfPresent(Bool.self, forKey: .blockClicksWhenUnmissable) { blockClicksWhenUnmissable = v }
     }
 }

@@ -93,6 +93,13 @@ private struct ReminderCard: View {
 
                 actions
 
+                if model.isBlocking {
+                    Text("Your screen stays dimmed until you join, snooze or dismiss. The menu bar and Dock still work.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+
                 if !others.isEmpty {
                     Divider()
                     alsoStarting

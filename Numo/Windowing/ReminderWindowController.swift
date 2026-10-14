@@ -8,17 +8,49 @@ final class ReminderWindowController {
     private var panel: ReminderPanel?
     private var hostingView: FirstMouseHostingView<ReminderRootView>?
     private var hideTask: Task<Void, Never>?
+    private let dimming = DimmingWindowController()
+    private var blocking: BlockingState?
+    private var blockingExpiryTask: Task<Void, Never>?
 
     init(viewModel: ReminderViewModel) {
         self.viewModel = viewModel
     }
 
-    /// Call after `viewModel.reminders` changed.
-    func refresh() {
+    /// Call after `viewModel.reminders` changed. `blocking` is non-nil when the blocking screen should be up.
+    func refresh(blocking: BlockingState?) {
+        self.blocking = blocking
         if viewModel.reminders.isEmpty {
             hide()
         } else {
             show()
+        }
+        applyBlocking()
+    }
+
+    // MARK: - Blocking screen
+
+    private func applyBlocking() {
+        blockingExpiryTask?.cancel()
+        blockingExpiryTask = nil
+
+        guard !viewModel.reminders.isEmpty, let blocking, blocking.expires > Date() else {
+            dimming.hide()
+            panel?.level = .floating
+            return
+        }
+
+        dimming.show(blocking)
+        panel?.level = ReminderPanel.blockingLevel
+
+        // Hard stop: whatever happens, the dimming goes away at its expiry and only the card stays.
+        let delay = blocking.expires.timeIntervalSinceNow
+        blockingExpiryTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(delay))
+            guard !Task.isCancelled, let self else { return }
+            self.dimming.hide()
+            self.panel?.level = .floating
+            self.viewModel.isBlocking = false
+            self.blockingExpiryTask = nil
         }
     }
 

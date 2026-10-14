@@ -37,7 +37,9 @@ Your little helper to finally get into the meeting.
 - Survives sleep, relaunch, clock and time-zone changes without missing or repeating a reminder.
 - Cancelled, declined and all-day events are skipped; the same meeting in two calendars alerts once.
 
-Not in the MVP yet: sound, background dimming, the Gentle and Unmissable modes, onboarding. They are in the [roadmap](docs/roadmap.md).
+Optional **blocking screen**: set Settings → Reminders → Reminder style to *Blocking screen* and the screen dims behind the card when a meeting starts, until you join, snooze or dismiss.
+
+Not in the MVP yet: sound, the Gentle mode, onboarding. They are in the [roadmap](docs/roadmap.md).
 
 ## Requirements
 
@@ -165,6 +167,10 @@ tccutil reset Calendar app.numo.Numo                   # forget the calendar per
 
 - **Reminders** appear 3 minutes before a meeting and when it starts (change this in Settings → Reminders). The card shows the title, platform, time and a countdown ring that turns orange and then red the later you are.
 - **Join Meeting** (or Return) opens the link and closes the card. **Snooze** (or Esc) brings it back after your default snooze. **Dismiss** (⌘.) silences that meeting.
+- **Blocking screen (optional).** In Settings → Reminders → *Reminder style*, choose *Blocking screen*. The 3-minute card stays a normal floating card. When the meeting starts (or a snoozed reminder comes back after the start), every display dims behind the card, and clicks on the dimmed area are swallowed until you act. You can change the dimming strength, or let clicks pass through. *Send test reminder* previews it.
+  - It never covers the **menu bar or the Dock**, so Cmd-Tab, Force Quit, Mission Control and the numo menu-bar icon (with **Quit**) keep working.
+  - It ends by itself when you join, snooze or dismiss, when the meeting ends, or **after 10 minutes at most**.
+  - It does not take keyboard focus, so keys you type keep going to your app. Click the card once to use Return (join), Esc (snooze) and ⌘. (dismiss).
 - **Menu bar:** the icon shows the next meeting's countdown. The popover lists today's meetings with Join buttons, and has **Pause** (an hour or until tomorrow), **Settings…** and **Send test reminder**.
 - **Settings:** choose which calendars to watch, which events count (links only, all-day, declined), lead times, snooze options, whether to open Teams in its app, and **Launch at login**.
 - **No Dock icon.** numo is a menu-bar app (`LSUIElement`), which is also what lets its reminder appear over full-screen apps. The setting only applies on a clean launch, so if you started it from Xcode and still see a Dock icon, quit and open the installed app instead.
@@ -196,6 +202,7 @@ Run from the repository root; `make help` lists every command.
 | No calendar prompt appears / access was denied | System Settings → Privacy & Security → Calendars → Full Calendar Access → numo. To get the prompt again: `tccutil reset Calendar app.numo.Numo`, then relaunch. |
 | numo shows no meetings | Add your accounts in System Settings → Internet Accounts, check they are ticked in numo's Settings → Calendars, and remember that by default only events with a Meet, Teams or Zoom link are shown. |
 | A Dock icon appears | See [Using numo](#using-numo). |
+| The screen is dimmed and I want out | Click **Snooze** or **Dismiss** on the card. If the card does not respond: click the numo icon in the menu bar → **Quit**, or press ⌥⌘⎋ (Force Quit). The dimming also ends by itself after 10 minutes. Switch the style back under Settings → Reminders. |
 | Menu-bar item missing | The notch or a crowded menu bar can hide it. Quit other menu-bar apps, or hold ⌘ and drag icons to make room. |
 | macOS says the app "can't be opened" | Right-click `/Applications/numo.app` (or `build/Build/Products/Debug/numo.app`) and choose **Open**. An app built on your own Mac is normally not quarantined, so this should not happen. |
 

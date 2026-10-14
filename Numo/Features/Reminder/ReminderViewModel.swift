@@ -9,6 +9,8 @@ final class ReminderViewModel {
     var reminders: [DueReminder] = []
     var snoozeOptions: [Int] = [1, 2, 5]
     var defaultSnooze = 2
+    /// True while the blocking screen is up; the card shows a short explanation.
+    var isBlocking = false
 
     @ObservationIgnored var onJoin: @MainActor (DueReminder) -> Void = { _ in }
     @ObservationIgnored var onSnooze: @MainActor (DueReminder, Int) -> Void = { _, _ in }

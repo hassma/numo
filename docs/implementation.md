@@ -21,6 +21,7 @@ The code was written in a Linux sandbox with no Swift toolchain, then built on a
 | Menu-bar item and popover | `Numo/Features/MenuBar` | written, **needs spike S4** |
 | Settings: calendars, lead times, snooze, launch at login | `Numo/Features/Settings` | written |
 | "Send test reminder" | popover footer and Settings → General | written |
+| **Blocking screen** (Unmissable mode): dimming on every display, click-swallowing, 10-minute cap | `Numo/Windowing/DimmingWindowController.swift`, `NumoCore/Models/AttentionMode.swift` | written, policy tested, **needs hardware check** |
 | Pause reminders (1 h / until tomorrow) | popover | written |
 
 ## Build it
@@ -59,7 +60,8 @@ The README has a full troubleshooting table.
 | Hand-made `.xcodeproj` | [XcodeGen](https://github.com/yonaskolb/XcodeGen) spec (`Numo/project.yml`) | A `.pbxproj` written without Xcode is fragile and unreviewable; the spec is short and diffable |
 | `SettingsStore` as `@Observable` | `ObservableObject` | Needs a `didSet` that fires for writes made through SwiftUI bindings; avoids relying on property observers inside `@Observable` |
 | `URLOpening` in `NumoCore` | In the app target, `@MainActor` | `NSWorkspace` is an AppKit type and nothing in the core tests needs it |
-| Sound, dimming, Gentle and Unmissable modes, onboarding | Not built | Phase 2 |
+| Gentle and Unmissable modes, dimming | Only *Floating card* (Focused) and *Blocking screen* (Unmissable) | Gentle is still Phase 2 |
+| Sound, onboarding | Not built | Phase 2 |
 | Snooze durations fully editable | Choose which of 1 / 2 / 3 / 5 / 10 min appear, plus a default | Enough for the MVP |
 | Custom lead time | Fixed choices 5 / 3 / 1 min and at start | Enough for the MVP |
 | Notification fallback if the app dies | Not built | Phase 3 |
@@ -75,7 +77,13 @@ These are the unverified assumptions the code depends on, in the order worth che
 5. **First click**: buttons should respond to the first click even though numo is not the active app.
 6. **Meet and Teams links** for each of your account types (spike S3).
 7. **Settings** opens in front from the menu bar (spike S4).
-8. **Sleep and wake**: schedule a test event, sleep the Mac across it, wake, and check you get one late reminder.
+8. **Blocking screen** (Settings → Reminders → Blocking screen → Send test reminder):
+   - every display is dimmed, the card is above the dimming, and clicks on the dimmed area do nothing;
+   - the **menu bar and Dock stay above** the dimming and clickable, so Quit and Force Quit remain reachable;
+   - it also appears over a full-screen app (spike S1), and on a second display;
+   - the dimming disappears after Join / Snooze / Dismiss and after 10 minutes at the latest;
+   - unplugging or adding a display while it is up covers the new layout.
+9. **Sleep and wake**: schedule a test event, sleep the Mac across it, wake, and check you get one late reminder.
 
 ## Layout
 
