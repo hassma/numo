@@ -285,6 +285,21 @@ struct ReminderEngineTests {
         #expect(await recorder.events.isEmpty)
     }
 
+    @Test func snapshotReportsHowMuchWasReadEvenWhenFiltersHideIt() async {
+        let linked = makeMeeting(start: start)
+        let unlinked = makeMeeting("no-link", start: start.addingTimeInterval(3600), link: nil)
+        let (engine, clock, _, _) = makeEngine(meetings: [linked, unlinked])
+
+        clock.advance(to: start.addingTimeInterval(-600))
+        await engine.replan()
+
+        var iterator = engine.snapshots.makeAsyncIterator()
+        let snapshot = await iterator.next()
+        #expect(snapshot?.eventsRead == 2)
+        #expect(snapshot?.meetings.count == 1, "the event without a link is filtered out of the list")
+        #expect(snapshot?.lastSuccessfulRead == clock.now())
+    }
+
     @Test func pausingHoldsRemindersBackAndResumingCatchesUp() async {
         var paused = AppSettings()
         paused.pausedUntil = t0.addingTimeInterval(3600)

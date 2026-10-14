@@ -37,6 +37,7 @@ final class AppEnvironment {
         AppActions(
             join: { [coordinator] meeting in coordinator.join(meeting: meeting) },
             requestCalendarAccess: { [weak self] in self?.requestCalendarAccess() },
+            refresh: { [weak self] in self?.refreshNow() },
             sendTestReminder: { [coordinator] in coordinator.sendTestReminder() },
             quit: { NSApplication.shared.terminate(nil) }
         )
@@ -64,6 +65,16 @@ final class AppEnvironment {
         let engine = engine
         Task {
             _ = await provider.requestAccess()
+            await engine.requestReplan()
+        }
+    }
+
+    /// "Refresh" in the menu bar: ask macOS to sync its accounts, then read the calendar again.
+    private func refreshNow() {
+        let provider = provider
+        let engine = engine
+        Task {
+            await provider.refreshSources()
             await engine.requestReplan()
         }
     }

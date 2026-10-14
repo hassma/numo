@@ -50,7 +50,7 @@ Dependencies point downwards only. `NumoCore` defines protocols (`CalendarProvid
 ```
 EKEventStoreChanged ─┐
 didWake / clock / tz ─┼─▶ ReminderEngine.replan(reason)
-heartbeat (15 min)   ─┘            │
+heartbeat (5 min)    ─┘            │
                                    ▼
         CalendarProviding.fetch(window) ─▶ [Meeting]
                                    │
@@ -58,7 +58,7 @@ heartbeat (15 min)   ─┘            │
                                    │
                          [PlannedReminder] sorted by fireAt
                                    │
-                 arm: Task.sleep(until: min(nextFireAt, now + 15 min))
+                 arm: Task.sleep(until: min(nextFireAt, now + 5 min))
                                    │ wakes
                                    ▼
                    fire due reminders ─▶ AsyncStream<ReminderDue>

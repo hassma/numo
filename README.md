@@ -203,6 +203,7 @@ Run from the repository root; `make help` lists every command.
 | numo shows no meetings | Add your accounts in System Settings → Internet Accounts, check they are ticked in numo's Settings → Calendars, and remember that by default only events with a Meet, Teams or Zoom link are shown. |
 | A Dock icon appears | See [Using numo](#using-numo). |
 | The screen is dimmed and I want out | Click **Snooze** or **Dismiss** on the card. If the card does not respond: click the numo icon in the menu bar → **Quit**, or press ⌥⌘⎋ (Force Quit). The dimming also ends by itself after 10 minutes. Switch the style back under Settings → Reminders. |
+| Reminders don't appear, or the menu shows outdated meetings | Open numo's menu. The line under "Reminders on" says when the calendar was last read and how many events came back. Click **Refresh** to force a read. `0 events` means macOS is not sharing the calendar (check Calendar.app shows the event, and that Full Calendar Access is on for numo). A number with an empty list means every event was filtered out, usually because it has no Meet, Teams or Zoom link. For details run `log stream --predicate 'subsystem == "app.numo.Numo"' --info`. |
 | Menu-bar item missing | The notch or a crowded menu bar can hide it. Quit other menu-bar apps, or hold ⌘ and drag icons to make room. |
 | macOS says the app "can't be opened" | Right-click `/Applications/numo.app` (or `build/Build/Products/Debug/numo.app`) and choose **Open**. An app built on your own Mac is normally not quarantined, so this should not happen. |
 
@@ -214,7 +215,7 @@ The logic that decides *when* to remind lives in `NumoCore`, a Foundation-only S
 EventKit ──▶ Meeting snapshots ──▶ MeetingFilter ──▶ ReminderPlanner ◀── ReminderLedger (persisted)
                                                           │
                        ReminderEngine: one sleeping task, re-armed on wake / clock /
-                       time-zone / calendar changes and a 15-minute heartbeat
+                       time-zone / calendar changes and a 5-minute heartbeat
                                                           │
                               ReminderCoordinator ──▶ floating NSPanel (SwiftUI + Liquid Glass)
 ```

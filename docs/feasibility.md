@@ -121,7 +121,7 @@ Opening Settings from an accessory app is awkward: the `Settings` scene needs th
 ## Scheduling and time ✅
 
 - Compute the next fire `Date`, sleep with `Task.sleep(until:clock: .continuous)`. `ContinuousClock` keeps counting during system sleep.
-- Monotonic clocks do not notice manual clock or time-zone edits, so re-plan on: `NSWorkspace.didWakeNotification`, `.NSSystemClockDidChange`, `.NSSystemTimeZoneDidChange`, `.NSCalendarDayChanged`, `EKEventStoreChanged`, and a 15-minute heartbeat.
+- Monotonic clocks do not notice manual clock or time-zone edits, so re-plan on: `NSWorkspace.didWakeNotification`, `.NSSystemClockDidChange`, `.NSSystemTimeZoneDidChange`, `.NSCalendarDayChanged`, `EKEventStoreChanged`, and a 5-minute heartbeat.
 - A UI countdown ticks (1 Hz) only while the overlay is visible, via `TimelineView`.
 
 ## Focus and Do Not Disturb

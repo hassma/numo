@@ -42,7 +42,7 @@ numo is a small, native, menu-bar-resident macOS app (Swift 6, SwiftUI, AppKit o
 1. **EventKit first, OAuth later (and only if needed).** It covers all three providers with one code path, no credentials stored, no network access in the MVP.
 2. **Pure Swift core in a local package.** Link detection, filtering, planning, dedupe and the reminder state machine have no EventKit/AppKit imports. They are unit-testable with an injected clock.
 3. **`NSPanel` for the overlay, SwiftUI for its content.** AppKit owns window level, Spaces behaviour and focus. SwiftUI owns everything visual.
-4. **Wall-clock-aware scheduling.** Arm one sleep for the next reminder, then re-arm on wake, clock change, time-zone change, day change, calendar change and a 15-minute heartbeat.
+4. **Wall-clock-aware scheduling.** Arm one sleep for the next reminder, then re-arm on wake, clock change, time-zone change, day change, calendar change and a 5-minute heartbeat.
 5. **Escalation, not noise.** The visual urgency changes colour, ring and wording only. Layout never jumps.
 6. **Every disruptive behaviour is user-controlled and escapable.** Persistent mode still ends at the meeting's end time and never covers the menu bar or Dock.
 

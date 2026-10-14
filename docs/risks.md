@@ -6,7 +6,7 @@
 | --- | --- | --- | --- | --- |
 | R1 | Panel does not appear over some full-screen apps, or exits the Space | Medium | High | Phase 0 spike S1; accessory policy + non-activating panel; fall back to a standard notification (Phase 3) if a specific case is impossible; document known exceptions |
 | R2 | Meet links for Google accounts missing from EventKit | Medium | High | Spike S3; parse every text field; if still missing, Phase 4 direct API for Google only |
-| R3 | EventKit sync lag means a freshly created invite reminds late or not at all | Medium | Medium | `refreshSourcesIfNecessary()` on wake and before lead times; 15-min heartbeat replan; document account-side latency |
+| R3 | EventKit sync lag means a freshly created invite reminds late or not at all | Medium | Medium | `refreshSourcesIfNecessary()` on wake and before lead times; 5-min heartbeat replan; document account-side latency |
 | R4 | Liquid Glass API shape changes between macOS 26 point releases | Low | Medium | Wrap in `DesignSystem/GlassSurface`; one place to change; test on the oldest and newest 26.x |
 | R5 | `MenuBarExtra` limitations (no programmatic open, focus quirks) | Medium | Low | Spike S4; `NSStatusItem` fallback behind the same view |
 | R6 | Settings window does not come to front from an accessory app | High | Low | `SettingsOpener` helper that activates the app and temporarily uses `.regular` policy; tested early |
