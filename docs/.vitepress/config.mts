@@ -45,7 +45,7 @@ export default defineConfig({
     outline: { level: [2, 3] },
     search: { provider: 'local' },
     footer: {
-      message: 'Plan and MVP status. The MVP code is written but not yet compiled.',
+      message: 'Plan and MVP status. The MVP builds; runtime verification is in progress.',
       copyright: 'numo'
     }
   }

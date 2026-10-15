@@ -35,7 +35,10 @@ final class ReminderCoordinator {
     }
 
     func sendTestReminder() {
-        let start = Date().addingTimeInterval(180)
+        // In blocking mode preview the real thing: a meeting that is starting now. Otherwise preview the
+        // "3 minutes before" card.
+        let blockingPreview = settings.settings.attentionMode == .unmissable
+        let start = blockingPreview ? Date() : Date().addingTimeInterval(180)
         let meeting = Meeting(
             id: MeetingID(externalID: "numo-test-\(UUID().uuidString)", occurrence: start),
             title: "Weekly Product Sync",
@@ -43,7 +46,7 @@ final class ReminderCoordinator {
             endDate: start.addingTimeInterval(1800),
             link: MeetingLink(url: URL(string: "https://meet.google.com/abc-defg-hij")!, platform: .googleMeet)
         )
-        let key = ReminderKey(occurrence: meeting.occurrenceKey, leadSeconds: 180)
+        let key = ReminderKey(occurrence: meeting.occurrenceKey, leadSeconds: blockingPreview ? 0 : 180)
         testKeys.insert(key)
         show(DueReminder(key: key, meeting: meeting, firedAt: Date()))
     }
@@ -72,7 +75,21 @@ final class ReminderCoordinator {
         viewModel.snoozeOptions = Array(Set(current.snoozeOptionsMinutes + [current.defaultSnoozeMinutes])).sorted()
         viewModel.defaultSnooze = current.defaultSnoozeMinutes
         viewModel.reminders = reminders
-        windows.refresh()
+
+        // Which of the visible reminders ask for the blocking screen, and until when it may stay up.
+        let blockers = reminders.filter {
+            AttentionPolicy.blocks(mode: current.attentionMode, meetingStart: $0.meeting.startDate, firedAt: $0.firedAt)
+        }
+        var blocking: BlockingState?
+        if let since = blockers.map(\.firedAt).min(), let end = blockers.map(\.meeting.endDate).min() {
+            blocking = BlockingState(
+                strength: current.dimStrength,
+                blocksClicks: current.blockClicksWhenUnmissable,
+                expires: AttentionPolicy.blockingExpiry(since: since, meetingEnd: end)
+            )
+        }
+        viewModel.isBlocking = blocking.map { $0.expires > Date() } ?? false
+        windows.refresh(blocking: blocking)
     }
 
     // MARK: - User actions

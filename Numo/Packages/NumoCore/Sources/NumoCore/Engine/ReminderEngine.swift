@@ -58,19 +58,27 @@ public struct EngineSnapshot: Sendable, Equatable {
     /// Filtered meetings that are in progress or upcoming, soonest first.
     public var meetings: [Meeting]
     public var pausedUntil: Date?
+    /// How many events the calendar returned before any filtering. Lets the UI tell "no events" from "all filtered out".
+    public var eventsRead: Int
+    /// When the calendar was last read successfully; nil if it never was.
+    public var lastSuccessfulRead: Date?
 
     public init(
         generatedAt: Date,
         authorization: CalendarAuthorization,
         calendars: [CalendarInfo],
         meetings: [Meeting],
-        pausedUntil: Date?
+        pausedUntil: Date?,
+        eventsRead: Int = 0,
+        lastSuccessfulRead: Date? = nil
     ) {
         self.generatedAt = generatedAt
         self.authorization = authorization
         self.calendars = calendars
         self.meetings = meetings
         self.pausedUntil = pausedUntil
+        self.eventsRead = eventsRead
+        self.lastSuccessfulRead = lastSuccessfulRead
     }
 }
 
@@ -91,7 +99,7 @@ public actor ReminderEngine {
         public var minimumSleep: TimeInterval
 
         public init(
-            heartbeat: TimeInterval = 15 * 60,
+            heartbeat: TimeInterval = 5 * 60,
             lookahead: TimeInterval = 36 * 3600,
             ledgerRetention: TimeInterval = 7 * 24 * 3600,
             minimumSleep: TimeInterval = 0.25
@@ -121,6 +129,8 @@ public actor ReminderEngine {
     private var presenting: [ReminderKey: Meeting] = [:]
     /// The most recent filtered meeting list.
     private var meetings: [Meeting] = []
+    private var eventsRead = 0
+    private var lastSuccessfulRead: Date?
 
     private var loopTask: Task<Void, Never>?
     private var sleeperTask: Task<Void, Never>?
@@ -287,6 +297,8 @@ public actor ReminderEngine {
 
         if let fetched {
             meetings = MeetingFilter.apply(fetched, settings: settings)
+            eventsRead = fetched.count
+            lastSuccessfulRead = now
         } else if authorization != .authorized {
             meetings = []
         }  // else: the fetch failed; keep the last known meetings rather than showing nothing.
@@ -319,7 +331,9 @@ public actor ReminderEngine {
                 authorization: authorization,
                 calendars: calendars,
                 meetings: meetings.filter { $0.endDate > now },
-                pausedUntil: paused ? settings.pausedUntil : nil
+                pausedUntil: paused ? settings.pausedUntil : nil,
+                eventsRead: eventsRead,
+                lastSuccessfulRead: lastSuccessfulRead
             )
         )
 

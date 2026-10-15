@@ -2,13 +2,8 @@
 
 The Phase 1 MVP from the [roadmap](/roadmap#phase-1-mvp-it-reliably-reminds-me) is written. It lives in `Numo/`.
 
-::: danger Not yet compiled
-The code was written in a Linux sandbox with **no Swift toolchain** (the environment's network policy blocks `download.swift.org`). So far it has only been:
-
-- syntax-checked with a tree-sitter Swift grammar (all 31 files parse; `#expect` macros and raw strings, which that grammar does not know, were neutralised first), and
-- reviewed by hand for type and concurrency errors.
-
-It has **not** been type-checked, built, or run, and none of the tests have been executed. Expect a first round of compiler fixes. Treat "builds and `swift test` passes" as the first acceptance gate.
+::: warning Compiles; not yet fully verified
+The code was written in a Linux sandbox with no Swift toolchain, then built on a Mac: `just build` succeeds with Xcode 26. Still to confirm on hardware: that the `NumoCore` tests pass (`just test`), and the runtime behaviour in the checklist below (panel over full-screen apps, glass rendering, link opening, sleep/wake).
 :::
 
 ## What is built
@@ -26,21 +21,23 @@ It has **not** been type-checked, built, or run, and none of the tests have been
 | Menu-bar item and popover | `Numo/Features/MenuBar` | written, **needs spike S4** |
 | Settings: calendars, lead times, snooze, launch at login | `Numo/Features/Settings` | written |
 | "Send test reminder" | popover footer and Settings → General | written |
+| **Blocking screen** (Unmissable mode): dimming on every display, click-swallowing, 10-minute cap | `Numo/Windowing/DimmingWindowController.swift`, `NumoCore/Models/AttentionMode.swift` | written, policy tested, **needs hardware check** |
 | Pause reminders (1 h / until tomorrow) | popover | written |
 
 ## Build it
 
-You need a Mac with macOS 26, Xcode 26 and `brew install xcodegen`. Run every command from the **repository root**; the `Makefile` does the right thing regardless:
+You need a Mac with macOS 26, Xcode 26 and `brew install xcodegen just`. Run every command from the **repository root**; the `justfile` does the right thing regardless:
 
 ```sh
-make doctor     # check the toolchain
-make test       # NumoCore logic tests
-make build      # compile the app without signing (a compile check, not meant to be run)
-make run        # build ad-hoc signed and launch it (make stop quits it)
-make open       # generate Numo.xcodeproj and open it; pick your team, then ⌘R
+just doctor     # check the toolchain
+just test       # NumoCore logic tests
+just build      # compile the app without signing (a compile check, not meant to be run)
+just run        # build ad-hoc signed and launch it (just stop quits it)
+just run self   # same, signed with your own local certificate (just self-sign-setup first)
+just open       # generate Numo.xcodeproj and open it; pick your team, then ⌘R
 ```
 
-Without `make`:
+Without `just`:
 
 ```sh
 (cd Numo && xcodegen generate)
@@ -51,7 +48,7 @@ xcrun swift test --package-path Numo/Packages/NumoCore
 Run once from Xcode, then quit and relaunch from Finder: `LSUIElement` only takes effect on a clean launch, so launching from the debugger can still show a Dock icon.
 
 ::: tip Common errors
-- `swift: bad interpreter: …python3.11…`: the `swift` on your `PATH` is a stale Homebrew script. Use `xcrun swift` (the `make` targets already do).
+- `swift: bad interpreter: …python3.11…`: the `swift` on your `PATH` is a stale Homebrew script. Use `xcrun swift` (the `just` recipes already do).
 - `chdir error … Numo/Numo/Packages/NumoCore`: you ran a root-relative command from inside `Numo/`. Go back to the root.
 
 The README has a full troubleshooting table.
@@ -64,7 +61,8 @@ The README has a full troubleshooting table.
 | Hand-made `.xcodeproj` | [XcodeGen](https://github.com/yonaskolb/XcodeGen) spec (`Numo/project.yml`) | A `.pbxproj` written without Xcode is fragile and unreviewable; the spec is short and diffable |
 | `SettingsStore` as `@Observable` | `ObservableObject` | Needs a `didSet` that fires for writes made through SwiftUI bindings; avoids relying on property observers inside `@Observable` |
 | `URLOpening` in `NumoCore` | In the app target, `@MainActor` | `NSWorkspace` is an AppKit type and nothing in the core tests needs it |
-| Sound, dimming, Gentle and Unmissable modes, onboarding | Not built | Phase 2 |
+| Gentle and Unmissable modes, dimming | Only *Floating card* (Focused) and *Blocking screen* (Unmissable) | Gentle is still Phase 2 |
+| Sound, onboarding | Not built | Phase 2 |
 | Snooze durations fully editable | Choose which of 1 / 2 / 3 / 5 / 10 min appear, plus a default | Enough for the MVP |
 | Custom lead time | Fixed choices 5 / 3 / 1 min and at start | Enough for the MVP |
 | Notification fallback if the app dies | Not built | Phase 3 |
@@ -80,7 +78,13 @@ These are the unverified assumptions the code depends on, in the order worth che
 5. **First click**: buttons should respond to the first click even though numo is not the active app.
 6. **Meet and Teams links** for each of your account types (spike S3).
 7. **Settings** opens in front from the menu bar (spike S4).
-8. **Sleep and wake**: schedule a test event, sleep the Mac across it, wake, and check you get one late reminder.
+8. **Blocking screen** (Settings → Reminders → Blocking screen → Send test reminder):
+   - every display is dimmed, the card is above the dimming, and clicks on the dimmed area do nothing;
+   - the **menu bar and Dock stay above** the dimming and clickable, so Quit and Force Quit remain reachable;
+   - it also appears over a full-screen app (spike S1), and on a second display;
+   - the dimming disappears after Join / Snooze / Dismiss and after 10 minutes at the latest;
+   - unplugging or adding a display while it is up covers the new layout.
+9. **Sleep and wake**: schedule a test event, sleep the Mac across it, wake, and check you get one late reminder.
 
 ## Layout
 

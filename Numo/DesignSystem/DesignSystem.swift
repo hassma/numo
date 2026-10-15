@@ -11,6 +11,24 @@ extension MeetingPlatform {
     }
 }
 
+extension AttentionMode {
+    var title: String {
+        switch self {
+        case .focused: "Floating card"
+        case .unmissable: "Blocking screen"
+        }
+    }
+
+    var summary: String {
+        switch self {
+        case .focused:
+            "A glass card appears over your work. Nothing else changes."
+        case .unmissable:
+            "When the meeting starts, the screen dims behind the card until you join, snooze or dismiss. The menu bar and Dock stay usable, and the dimming ends on its own after 10 minutes."
+        }
+    }
+}
+
 struct PlatformBadge: View {
     let platform: MeetingPlatform
 

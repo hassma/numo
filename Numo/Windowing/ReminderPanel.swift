@@ -11,6 +11,9 @@ import SwiftUI
 /// - `.floating` level: above normal windows but below the menu bar, Dock and system UI, so the
 ///   reminder can never trap the user.
 final class ReminderPanel: NSPanel {
+    /// While the screen is blocked the card must sit one level above the dimming windows.
+    static let blockingLevel = NSWindow.Level(rawValue: DimmingWindowController.level.rawValue + 1)
+
     init() {
         super.init(
             contentRect: .zero,

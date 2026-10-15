@@ -328,3 +328,53 @@ struct SettingsAndCopyTests {
         #expect(ReminderCopy.compactCountdown(secondsUntilStart: 3601) == nil)
     }
 }
+
+struct AttentionPolicyTests {
+    let start = t0.addingTimeInterval(600)
+
+    @Test func focusedModeNeverBlocks() {
+        #expect(!AttentionPolicy.blocks(mode: .focused, meetingStart: start, firedAt: start))
+        #expect(!AttentionPolicy.blocks(mode: .focused, meetingStart: start, firedAt: start.addingTimeInterval(300)))
+    }
+
+    @Test func earlyLeadReminderDoesNotBlock() {
+        // The "3 minutes before" card must not take over the screen.
+        #expect(!AttentionPolicy.blocks(mode: .unmissable, meetingStart: start, firedAt: start.addingTimeInterval(-180)))
+        #expect(!AttentionPolicy.blocks(mode: .unmissable, meetingStart: start, firedAt: start.addingTimeInterval(-61)))
+    }
+
+    @Test func blocksFromOneMinuteBeforeTheStartOnwards() {
+        #expect(AttentionPolicy.blocks(mode: .unmissable, meetingStart: start, firedAt: start.addingTimeInterval(-60)))
+        #expect(AttentionPolicy.blocks(mode: .unmissable, meetingStart: start, firedAt: start))
+        // A reminder coming back from a snooze after the start still blocks.
+        #expect(AttentionPolicy.blocks(mode: .unmissable, meetingStart: start, firedAt: start.addingTimeInterval(240)))
+    }
+
+    @Test func blockingIsCappedByTimeAndByTheEndOfTheMeeting() {
+        let long = start.addingTimeInterval(2 * 3600)
+        #expect(AttentionPolicy.blockingExpiry(since: start, meetingEnd: long) == start.addingTimeInterval(10 * 60))
+        let short = start.addingTimeInterval(120)
+        #expect(AttentionPolicy.blockingExpiry(since: start, meetingEnd: short) == short)
+    }
+
+    @Test func newSettingsDefaultToTheFocusedCardAndSurviveMissingKeys() throws {
+        let defaults = AppSettings()
+        #expect(defaults.attentionMode == .focused)
+        #expect(defaults.blockClicksWhenUnmissable)
+
+        let old = try JSONDecoder().decode(AppSettings.self, from: Data(#"{"defaultSnoozeMinutes": 3}"#.utf8))
+        #expect(old.attentionMode == .focused && old.dimStrength == defaults.dimStrength)
+
+        var custom = AppSettings()
+        custom.attentionMode = .unmissable
+        custom.dimStrength = 0.8
+        custom.blockClicksWhenUnmissable = false
+        let decoded = try JSONDecoder().decode(AppSettings.self, from: JSONEncoder().encode(custom))
+        #expect(decoded == custom)
+    }
+
+    @Test func unknownModeFromANewerBuildFallsBackToFocused() throws {
+        let decoded = try JSONDecoder().decode(AppSettings.self, from: Data(#"{"attentionMode": "hologram"}"#.utf8))
+        #expect(decoded.attentionMode == .focused)
+    }
+}

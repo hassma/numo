@@ -11,6 +11,8 @@ final class AppModel {
     private(set) var meetings: [Meeting] = []
     private(set) var calendars: [CalendarInfo] = []
     private(set) var pausedUntil: Date?
+    private(set) var eventsRead = 0
+    private(set) var lastSuccessfulRead: Date?
 
     private(set) var menuBarTitle: String?
     private(set) var menuBarSymbol = "calendar.badge.clock"
@@ -39,6 +41,8 @@ final class AppModel {
             meetings = snapshot.meetings
             calendars = snapshot.calendars
             pausedUntil = snapshot.pausedUntil
+            eventsRead = snapshot.eventsRead
+            lastSuccessfulRead = snapshot.lastSuccessfulRead
             refreshMenuBar(now: Date())
         }
     }

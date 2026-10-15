@@ -7,6 +7,7 @@ import SwiftUI
 struct AppActions {
     var join: @MainActor (Meeting) -> Void
     var requestCalendarAccess: @MainActor () -> Void
+    var refresh: @MainActor () -> Void
     var sendTestReminder: @MainActor () -> Void
     var quit: @MainActor () -> Void
 }
@@ -75,11 +76,23 @@ struct MenuBarContentView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Label("No more meetings", systemImage: "checkmark.circle")
                     .font(.headline)
-                Text("Meet, Teams and Zoom events from your calendars show up here.")
+                Text(emptyExplanation)
                     .font(.callout)
                     .foregroundStyle(.secondary)
             }
         }
+    }
+
+    /// Why the list is empty, so "nothing found" is never confused with "everything filtered out".
+    private var emptyExplanation: String {
+        if model.eventsRead == 0 {
+            return "numo found no events in the next 36 hours in the calendars macOS shares with it."
+        }
+        if settings.settings.requireMeetingLink {
+            return "numo read \(model.eventsRead) events but none has a Meet, Teams or Zoom link. "
+                + "Turn off \"Only events with a link\" in Settings → Calendars to be reminded about every event."
+        }
+        return "numo read \(model.eventsRead) events, but your calendar, all-day and declined settings hide all of them."
     }
 
     private func nextUp(_ meeting: Meeting, now: Date) -> some View {
@@ -184,6 +197,31 @@ struct MenuBarContentView: View {
     // MARK: - Status and footer
 
     private func statusRow(now: Date) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            reminderStatus(now: now)
+            if model.authorization == .authorized { readStatus }
+        }
+    }
+
+    /// When the calendar was last read and how much came back: the first thing to look at when
+    /// reminders seem to be missing.
+    private var readStatus: some View {
+        HStack {
+            if let read = model.lastSuccessfulRead {
+                Text("Calendar read \(read.formatted(date: .omitted, time: .standard)) · \(model.eventsRead) events")
+            } else {
+                Text("Calendar not read yet")
+            }
+            Spacer()
+            Button("Refresh") { actions.refresh() }
+                .buttonStyle(.plain)
+                .foregroundStyle(Color.accentColor)
+        }
+        .font(.caption)
+        .foregroundStyle(.secondary)
+    }
+
+    private func reminderStatus(now: Date) -> some View {
         HStack {
             if model.isPaused(at: now), let until = model.pausedUntil {
                 Label {

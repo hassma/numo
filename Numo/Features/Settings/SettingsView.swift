@@ -96,6 +96,29 @@ struct RemindersPane: View {
                 }
             }
 
+            Section {
+                Picker("Reminder style", selection: $store.settings.attentionMode) {
+                    ForEach(AttentionMode.allCases) { mode in
+                        Text(mode.title).tag(mode)
+                    }
+                }
+                Text(store.settings.attentionMode.summary)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+
+                if store.settings.attentionMode == .unmissable {
+                    LabeledContent("Dimming") {
+                        Slider(value: $store.settings.dimStrength, in: 0.2...0.9)
+                            .frame(width: 180)
+                    }
+                    Toggle("Block clicks on the dimmed screen", isOn: $store.settings.blockClicksWhenUnmissable)
+                }
+            } header: {
+                Text("Style")
+            } footer: {
+                Text("Use Send test reminder in the menu bar to preview it.")
+            }
+
             Section("Snooze") {
                 ForEach(Self.snoozeChoices, id: \.self) { minutes in
                     Toggle("\(minutes) min", isOn: membership(of: minutes, in: \.snoozeOptionsMinutes, descending: false))
