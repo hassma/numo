@@ -3,7 +3,7 @@
 The Phase 1 MVP from the [roadmap](/roadmap#phase-1-mvp-it-reliably-reminds-me) is written. It lives in `Numo/`.
 
 ::: warning Compiles; not yet fully verified
-The code was written in a Linux sandbox with no Swift toolchain, then built on a Mac: `make build` succeeds with Xcode 26. Still to confirm on hardware: that the `NumoCore` tests pass (`make test`), and the runtime behaviour in the checklist below (panel over full-screen apps, glass rendering, link opening, sleep/wake).
+The code was written in a Linux sandbox with no Swift toolchain, then built on a Mac: `just build` succeeds with Xcode 26. Still to confirm on hardware: that the `NumoCore` tests pass (`just test`), and the runtime behaviour in the checklist below (panel over full-screen apps, glass rendering, link opening, sleep/wake).
 :::
 
 ## What is built
@@ -26,17 +26,18 @@ The code was written in a Linux sandbox with no Swift toolchain, then built on a
 
 ## Build it
 
-You need a Mac with macOS 26, Xcode 26 and `brew install xcodegen`. Run every command from the **repository root**; the `Makefile` does the right thing regardless:
+You need a Mac with macOS 26, Xcode 26 and `brew install xcodegen just`. Run every command from the **repository root**; the `justfile` does the right thing regardless:
 
 ```sh
-make doctor     # check the toolchain
-make test       # NumoCore logic tests
-make build      # compile the app without signing (a compile check, not meant to be run)
-make run        # build ad-hoc signed and launch it (make stop quits it)
-make open       # generate Numo.xcodeproj and open it; pick your team, then ⌘R
+just doctor     # check the toolchain
+just test       # NumoCore logic tests
+just build      # compile the app without signing (a compile check, not meant to be run)
+just run        # build ad-hoc signed and launch it (just stop quits it)
+just run self   # same, signed with your own local certificate (just self-sign-setup first)
+just open       # generate Numo.xcodeproj and open it; pick your team, then ⌘R
 ```
 
-Without `make`:
+Without `just`:
 
 ```sh
 (cd Numo && xcodegen generate)
@@ -47,7 +48,7 @@ xcrun swift test --package-path Numo/Packages/NumoCore
 Run once from Xcode, then quit and relaunch from Finder: `LSUIElement` only takes effect on a clean launch, so launching from the debugger can still show a Dock icon.
 
 ::: tip Common errors
-- `swift: bad interpreter: …python3.11…`: the `swift` on your `PATH` is a stale Homebrew script. Use `xcrun swift` (the `make` targets already do).
+- `swift: bad interpreter: …python3.11…`: the `swift` on your `PATH` is a stale Homebrew script. Use `xcrun swift` (the `just` recipes already do).
 - `chdir error … Numo/Numo/Packages/NumoCore`: you ran a root-relative command from inside `Numo/`. Go back to the root.
 
 The README has a full troubleshooting table.

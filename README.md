@@ -12,7 +12,7 @@ Your little helper to finally get into the meeting.
 - [Requirements](#requirements)
 - [Installation](#installation)
   - [1. Set up Xcode](#1-set-up-xcode)
-  - [2. Install XcodeGen](#2-install-xcodegen)
+  - [2. Install XcodeGen and just](#2-install-xcodegen-and-just)
   - [3. Get the code](#3-get-the-code)
   - [4. Check your setup](#4-check-your-setup)
   - [5. Build and install](#5-build-and-install)
@@ -21,6 +21,7 @@ Your little helper to finally get into the meeting.
   - [Update and uninstall](#update-and-uninstall)
 - [Using numo](#using-numo)
 - [Development](#development)
+  - [Self-signing](#self-signing)
 - [Troubleshooting](#troubleshooting)
 - [How it works](#how-it-works)
 - [Repository layout](#repository-layout)
@@ -49,10 +50,11 @@ Not in the MVP yet: sound, the Gentle mode, onboarding. They are in the [roadmap
 | Xcode | 26, the full app | building | The Command Line Tools alone are **not** enough: `xcodebuild` is missing from them. |
 | [Homebrew](https://brew.sh) | any recent | installing XcodeGen | Or install XcodeGen another way. |
 | [XcodeGen](https://github.com/yonaskolb/XcodeGen) | any recent | generating the Xcode project | `brew install xcodegen` |
+| [just](https://just.systems) | any recent | running the project's commands | `brew install just` |
 | Git | any recent | getting the code | Included with Xcode. |
 | Calendar accounts | Added in System Settings → Internet Accounts | having something to remind you about | iCloud, Google, Microsoft 365/Exchange, CalDAV. |
 | Calendar permission | **Full** Calendar Access | running | macOS has no read-only calendar permission. Events never leave your Mac. |
-| Apple Developer account | not required | nothing | `make run` and `make install` sign ad hoc. You only need a team to distribute the app or to run it from Xcode with your own signing. |
+| Apple Developer account | not required | nothing | `just run` and `just install` sign ad hoc, or with a free local certificate (`just self-sign`). You only need a team to distribute the app or to run it from Xcode with your own signing. |
 | Node 20+ and [pnpm](https://pnpm.io) | optional | the docs site only | Not needed to build or run the app. |
 
 ## Installation
@@ -72,13 +74,13 @@ numo is not distributed as a download yet, so you build it from source. It takes
 
 3. Check: `xcodebuild -version` should print `Xcode 26.x`.
 
-### 2. Install XcodeGen
+### 2. Install XcodeGen and just
 
 ```sh
-brew install xcodegen
+brew install xcodegen just
 ```
 
-The Xcode project is generated from `Numo/project.yml` and is not committed, so this step is required.
+The Xcode project is generated from `Numo/project.yml` and is not committed, so XcodeGen is required. [just](https://just.systems) runs the commands below; run `just` on its own to list them.
 
 ### 3. Get the code
 
@@ -90,22 +92,22 @@ cd numo
 ### 4. Check your setup
 
 ```sh
-make doctor
+just doctor
 ```
 
 It prints the active developer directory, the Swift and Xcode versions, and whether `xcodegen` is found. If something is missing, see [Troubleshooting](#troubleshooting). Optionally run the logic tests:
 
 ```sh
-make test
+just test
 ```
 
 ### 5. Build and install
 
 ```sh
-make install
+just install
 ```
 
-This builds a Release version, signs it ad hoc (no Apple account needed) and copies it to `/Applications/numo.app`. Then start it from Launchpad or Finder, or run `open -a numo`.
+This builds a Release version, signs it ad hoc (no Apple account needed) and copies it to `/Applications/numo.app`. Then start it from Launchpad or Finder, or run `open -a numo`. To sign with your own certificate instead, see [Self-signing](#self-signing).
 
 ### 6. Grant calendar access
 
@@ -119,13 +121,14 @@ To try numo without copying it to `/Applications`:
 
 | Command | What it does |
 | --- | --- |
-| `make run` | Builds a Debug version with ad-hoc signing and launches it from `build/`. |
-| `make run SIGNING=none` | Skips signing altogether. The app then runs unsandboxed, which is fine for trying it out. |
-| `make stop` | Quits the running app. |
-| `make open` | Generates the Xcode project and opens it. Select the **Numo** target → **Signing & Capabilities** → choose your **Team**, then press ⌘R. Best for debugging. |
+| `just run` | Builds a Debug version with ad-hoc signing and launches it from `build/`. |
+| `just run self` | Same, signed with your local certificate (see [Self-signing](#self-signing)). |
+| `just run none` | Skips signing altogether. The app then runs unsandboxed, which is fine for trying it out. |
+| `just stop` | Quits the running app. |
+| `just open` | Generates the Xcode project and opens it. Select the **Numo** target → **Signing & Capabilities** → choose your **Team**, then press ⌘R. Best for debugging. |
 
 <details>
-<summary>Without <code>make</code></summary>
+<summary>Without <code>just</code></summary>
 
 ```sh
 (cd Numo && xcodegen generate)                         # writes Numo/Numo.xcodeproj (git-ignored)
@@ -145,13 +148,13 @@ To update, pull the latest code and install again:
 
 ```sh
 git pull
-make install
+just install
 ```
 
 To remove numo:
 
 ```sh
-make uninstall
+just uninstall
 ```
 
 This quits numo and deletes `/Applications/numo.app`. Your settings and reminder history stay on disk. To remove them as well:
@@ -177,28 +180,43 @@ tccutil reset Calendar app.numo.Numo                   # forget the calendar per
 
 ## Development
 
-Run from the repository root; `make help` lists every command.
+Run `just` from the repository root to list every command.
 
 | Command | What it does |
 | --- | --- |
-| `make doctor` | Check that the tools are installed. |
-| `make test` | Run the `NumoCore` logic tests. |
-| `make build` | Compile the app without signing. A compile check; do not run this output. |
-| `make run` / `make stop` | Build, launch and quit a Debug app. |
-| `make open` | Generate the Xcode project and open it. |
-| `make install` / `make uninstall` | Install to or remove from `/Applications`. |
-| `make docs-dev` | Serve the docs at http://localhost:5173. |
-| `make clean` | Remove generated files. |
+| `just doctor` | Check that the tools are installed. |
+| `just test` | Run the `NumoCore` logic tests. |
+| `just build` | Compile the app without signing. A compile check; do not run this output. |
+| `just run [adhoc\|self\|none]` / `just stop` | Build, launch and quit a Debug app. |
+| `just open` | Generate the Xcode project and open it. |
+| `just install [adhoc\|self\|none]` / `just uninstall` | Install to or remove from `/Applications`. |
+| `just self-sign` | Build a Release app signed with your local certificate. See [Self-signing](#self-signing). |
+| `just docs-dev` | Serve the docs at http://localhost:5173. |
+| `just clean` | Remove generated files. |
+
+### Self-signing
+
+An ad-hoc signature changes with every build, so macOS can treat each rebuilt app as a new app and ask for calendar access again. A self-signed certificate gives numo a stable identity, so the permission sticks. It is free, needs no Apple account and only works on your own Mac.
+
+```sh
+just self-sign-setup     # once: creates "numo Local Signing" in your login keychain
+just self-sign           # builds a Release app signed with it and checks the signature
+just install self        # installs the app signed that way (just run self for a Debug build)
+```
+
+`self-sign-setup` asks for your login password once, to trust the certificate for code signing, and macOS may ask whether `codesign` may use the key (choose **Always Allow**). After the first switch from ad-hoc signing, grant calendar access to numo once more. `just self-sign-verify` shows how the built app is signed, and `just self-sign-reset` deletes the certificate. Set `NUMO_CERT_NAME` to use another certificate name.
+
+A self-signed app is not notarized, so Gatekeeper still blocks it on another Mac. To share numo you need a Developer ID certificate.
 
 ## Troubleshooting
 
 | Problem | Fix |
 | --- | --- |
-| `swift: bad interpreter: /opt/homebrew/opt/python@3.11/bin/python3.11: no such file` | The `swift` first on your `PATH` is a stale Homebrew script, not Xcode's compiler. Use `make test` (it calls `xcrun swift`), or run `xcrun swift …` directly. To fix it for good, run `which -a swift` and `ls -l /opt/homebrew/bin/swift`, then `brew reinstall` or `brew uninstall` the formula it points to. `make doctor` shows what is on your `PATH`. |
-| `chdir error … Numo/Numo/Packages/NumoCore` | A command that expects the repository root was run from inside `Numo/`. Run `cd ..` back to the root, or use `make`. |
-| `xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' …` | Only the Command Line Tools are active. Follow [Set up Xcode](#1-set-up-xcode). `make build`, `make test` and `make install` detect this and say so. |
+| `swift: bad interpreter: /opt/homebrew/opt/python@3.11/bin/python3.11: no such file` | The `swift` first on your `PATH` is a stale Homebrew script, not Xcode's compiler. Use `just test` (it calls `xcrun swift`), or run `xcrun swift …` directly. To fix it for good, run `which -a swift` and `ls -l /opt/homebrew/bin/swift`, then `brew reinstall` or `brew uninstall` the formula it points to. `just doctor` shows what is on your `PATH`. |
+| `chdir error … Numo/Numo/Packages/NumoCore` | A command that expects the repository root was run from inside `Numo/`. Run `cd ..` back to the root, or use `just`. |
+| `xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' …` | Only the Command Line Tools are active. Follow [Set up Xcode](#1-set-up-xcode). `just build`, `just test` and `just install` detect this and say so. |
 | `xcodegen: command not found` | `brew install xcodegen` |
-| Xcode: "Signing requires a development team" | Pick your team under Signing & Capabilities, or use `make run` / `make install`, which sign ad hoc. |
+| Xcode: "Signing requires a development team" | Pick your team under Signing & Capabilities, or use `just run` / `just install`, which sign ad hoc. |
 | No calendar prompt appears / access was denied | System Settings → Privacy & Security → Calendars → Full Calendar Access → numo. To get the prompt again: `tccutil reset Calendar app.numo.Numo`, then relaunch. |
 | numo shows no meetings | Add your accounts in System Settings → Internet Accounts, check they are ticked in numo's Settings → Calendars, and remember that by default only events with a Meet, Teams or Zoom link are shown. |
 | A Dock icon appears | See [Using numo](#using-numo). |
@@ -226,7 +244,7 @@ Every plan is recomputed from calendar, ledger and settings, so a missed or dupl
 
 ```
 .
-├── Makefile                    developer commands (make help)
+├── justfile                    developer commands (run `just` to list them)
 ├── Numo/
 │   ├── project.yml             XcodeGen spec for the macOS app
 │   ├── App/                    @main, composition root, Info.plist, entitlements
@@ -245,9 +263,9 @@ Every plan is recomputed from calendar, ledger and settings, so a missed or dupl
 The plan and the MVP status are a [VitePress](https://vitepress.dev) site in `docs/`:
 
 ```sh
-make docs-install
-make docs-dev       # http://localhost:5173
-make docs-build     # static site in docs/.vitepress/dist
+just docs-install
+just docs-dev       # http://localhost:5173
+just docs-build     # static site in docs/.vitepress/dist
 ```
 
 Start with the [overview](docs/overview.md), then [MVP status](docs/implementation.md), the [architecture](docs/architecture.md), and the [roadmap](docs/roadmap.md). To publish on GitHub Pages, set `base` in `docs/.vitepress/config.mts` to `'/numo/'`.
