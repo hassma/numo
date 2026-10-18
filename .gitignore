@@ -9,4 +9,5 @@ docs/.vitepress/dist/
 xcuserdata/
 DerivedData/
 .swiftpm/
-/build/
+build/
+Numo.xcodeproj/
