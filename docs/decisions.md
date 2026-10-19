@@ -1,6 +1,6 @@
-# Decisions awaiting approval
+# Decisions
 
-Each row has a recommended default. Reply "approved with defaults" or list the changes.
+Each row has a recommended default. The MVP was built on these defaults; where it deviates, [MVP status](/implementation#deviations-from-the-plan) says so. Open a change here before changing a default in code.
 
 | # | Decision | Recommended default | Alternatives and trade-off |
 | --- | --- | --- | --- |
@@ -18,7 +18,7 @@ Each row has a recommended default. Reply "approved with defaults" or list the c
 | 12 | **Notification fallback** | Phase 3: schedule a time-sensitive `UserNotifications` backup for the next meetings, cancelled when the overlay shows | Skipping it means a crashed app misses meetings silently. |
 | 13 | **Bundle ID / signing team** | Placeholder `app.numo.Numo`; you provide the real team ID | Needed only when generating the Xcode project. |
 
-## Information I need from you before Phase 0
+## Inputs needed for Phase 0
 
 - Which calendar accounts you actually use (Google / M365 / iCloud, and whether Google is added to macOS or only in a browser). This decides how much the EventKit spike matters.
 - A Mac running macOS 26 with Xcode 26 for building. I can write the code from this Linux sandbox but cannot compile or run it here.

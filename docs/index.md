@@ -7,14 +7,14 @@ hero:
   tagline: A native macOS 26 menu-bar app with a Liquid Glass overlay that interrupts deep focus, and always lets you join, snooze or dismiss.
   actions:
     - theme: brand
-      text: Read the overview
+      text: Install numo
+      link: /guide/installation
+    - theme: alt
+      text: Introduction
+      link: /guide/
+    - theme: alt
+      text: Read the plan
       link: /overview
-    - theme: alt
-      text: Decisions to approve
-      link: /decisions
-    - theme: alt
-      text: Roadmap
-      link: /roadmap
 
 features:
   - icon: 🪟
@@ -35,8 +35,9 @@ features:
 
 | Section | Contents |
 | --- | --- |
+| [Guide](/guide/) | What numo does, [requirements](/guide/requirements), step-by-step [installation](/guide/installation), [signing](/guide/signing), [using it](/guide/using), [troubleshooting](/guide/troubleshooting) and [development](/guide/development) |
 | [Overview & MVP](/overview) | Requirements analysis, key findings, the simplest reliable MVP |
-| [Decisions](/decisions) | Open choices that need your approval before any code is generated |
+| [Decisions](/decisions) | The choices behind the plan and the defaults the MVP uses |
 | [A · Product spec](/product-spec) | Features, attention modes, flows |
 | [B · Feasibility](/feasibility) | What macOS actually allows, and what still needs a hardware spike |
 | [C · Architecture](/architecture) | Components, data flow, concurrency model, reminder state machine |
@@ -48,5 +49,5 @@ features:
 | [MVP status](/implementation) | What is built, how to build it, what to verify first |
 
 ::: warning Status
-The plan is approved to build and the Phase 1 MVP is written (see [MVP status](/implementation)). It was written in a Linux sandbox and **builds on macOS 26 / Xcode 26**, but its runtime behaviour and tests are still being verified on hardware. API names come from Apple's documented frameworks and public sources; items that need confirmation on real hardware are marked 🔬 and scheduled as [Phase 0 spikes](/roadmap#phase-0-feasibility-spikes).
+The Phase 1 MVP is written and **builds on macOS 26 / Xcode 26** (see [MVP status](/implementation)). Its runtime behaviour and tests are still being verified on hardware. API names come from Apple's documented frameworks and public sources; items that need confirmation on real hardware are marked 🔬 and scheduled as [Phase 0 spikes](/roadmap#phase-0-feasibility-spikes).
 :::

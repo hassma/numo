@@ -2,7 +2,7 @@
   "name": "numo-docs",
   "private": true,
   "version": "0.1.0",
-  "description": "Product & technical plan for numo, a native macOS meeting reminder.",
+  "description": "Documentation for numo, a native macOS meeting reminder: install guide, product plan and architecture.",
   "type": "module",
   "scripts": {
     "docs:dev": "vitepress dev docs",
@@ -10,11 +10,11 @@
     "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
-    "vitepress": "^1.6.4"
+    "vitepress": "2.0.0-alpha.20"
   },
   "packageManager": "pnpm@10.28.0",
   "engines": {
-    "node": ">=20"
+    "node": "^20.19.0 || >=22.12.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

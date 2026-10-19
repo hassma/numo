@@ -1,6 +1,6 @@
 # MVP implementation status
 
-The Phase 1 MVP from the [roadmap](/roadmap#phase-1-mvp-it-reliably-reminds-me) is written. It lives in `Numo/`.
+The Phase 1 MVP from the [roadmap](/roadmap#phase-1-·-mvp-it-reliably-reminds-me) is written. It lives in `Numo/`.
 
 ::: warning Compiles; not yet fully verified
 The code was written in a Linux sandbox with no Swift toolchain, then built on a Mac: `just build` succeeds with Xcode 26. Still to confirm on hardware: that the `NumoCore` tests pass (`just test`), and the runtime behaviour in the checklist below (panel over full-screen apps, glass rendering, link opening, sleep/wake).
@@ -26,7 +26,7 @@ The code was written in a Linux sandbox with no Swift toolchain, then built on a
 
 ## Build it
 
-You need a Mac with macOS 26, Xcode 26 and `brew install xcodegen just`. Run every command from the **repository root**; the `justfile` does the right thing regardless:
+The full walkthrough is in the [installation guide](/guide/installation). In short: you need a Mac with macOS 26, Xcode 26 and `brew install xcodegen just`, then, from the repository:
 
 ```sh
 just doctor     # check the toolchain
@@ -47,11 +47,8 @@ xcrun swift test --package-path Numo/Packages/NumoCore
 
 Run once from Xcode, then quit and relaunch from Finder: `LSUIElement` only takes effect on a clean launch, so launching from the debugger can still show a Dock icon.
 
-::: tip Common errors
-- `swift: bad interpreter: …python3.11…`: the `swift` on your `PATH` is a stale Homebrew script. Use `xcrun swift` (the `just` recipes already do).
-- `chdir error … Numo/Numo/Packages/NumoCore`: you ran a root-relative command from inside `Numo/`. Go back to the root.
-
-The README has a full troubleshooting table.
+::: tip Something went wrong?
+See [Troubleshooting](/guide/troubleshooting) for the common build, permission and "no reminders" problems.
 :::
 
 ## Deviations from the plan
